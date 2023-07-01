@@ -35,5 +35,13 @@ namespace LocalBusinessLookup.Controllers
 
             return business;
         }
+        // POST api/businesses
+        [HttpPost]
+        public async Task<ActionResult<Business>> Post(Business business)
+        {
+            _db.Businesses.Add(business);
+            await _db.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetBusiness), new { id = business.BusinessId }, business);
+        }
     }
 }
