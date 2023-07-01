@@ -15,11 +15,32 @@ namespace LocalBusinessLookup.Controllers
             _db = db;
         }
 
-        // GET api/businesses
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Business>>> Get()
+        public ActionResult<IEnumerable<Business>> Get(string name, string address, string phoneNumber, string website)
         {
-            return await _db.Businesses.ToListAsync();
+            var query = _db.Businesses.AsQueryable();
+
+            if (name != null)
+            {
+                query = query.Where(entry => entry.Name == name);
+            }
+
+            if (address != null)
+            {
+                query = query.Where(entry => entry.Address == address);
+            }
+
+            if (phoneNumber != null)
+            {
+                query = query.Where(entry => entry.PhoneNumber == phoneNumber);
+            }
+
+            if (website != null)
+            {
+                query = query.Where(entry => entry.Website == website);
+            }
+
+            return query.ToList();
         }
 
         // GET: api/Businesses/5
