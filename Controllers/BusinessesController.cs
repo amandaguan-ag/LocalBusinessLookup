@@ -43,5 +43,54 @@ namespace LocalBusinessLookup.Controllers
             await _db.SaveChangesAsync();
             return CreatedAtAction(nameof(GetBusiness), new { id = business.BusinessId }, business);
         }
+        // PUT: api/Businesses/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, Business business)
+        {
+            if (id != business.BusinessId)
+            {
+                return BadRequest();
+            }
+
+            _db.Businesses.Update(business);
+
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BusinessExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        private bool BusinessExists(int id)
+        {
+            return _db.Businesses.Any(e => e.BusinessId == id);
+        }
+        // DELETE: api/Businesses/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBusiness(int id)
+        {
+            Business business = await _db.Businesses.FindAsync(id);
+            if (business == null)
+            {
+                return NotFound();
+            }
+
+            _db.Businesses.Remove(business);
+            await _db.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
